@@ -109,6 +109,7 @@ export default function StackedAreaChart(container) {
                                     }
                                     update(data); // simply update the chart again
                                 })
+                .style("cursor", 'pointer')
                 
         
             //Scales 
