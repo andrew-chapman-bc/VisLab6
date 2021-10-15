@@ -8,7 +8,7 @@ export default function AreaChart(container){
 
 
     const outerWidth = 800;
-    const outerHeight = 500;
+    const outerHeight = 200;
 
     const margin = {top:40, left:40, bottom:25, right:25};
     const width = outerWidth - margin.left - margin.right;
@@ -29,7 +29,7 @@ export default function AreaChart(container){
 
     const listeners = { brushed: null };
     const brush = d3.brushX()
-                .extent([[margin.left, margin.top], [outerWidth - margin.right, outerHeight - margin.bottom]])
+                .extent([[0, 0.5], [width, height - margin.bottom + 0.5]])
                 .on("brush", brushed)
                 .on("end", brushended);
         
@@ -44,7 +44,7 @@ export default function AreaChart(container){
           
     function brushended({selection}) {
         if (!selection) {
-            gb.call(brush.move);
+            listeners["brushed"](null);
         }
     }
         

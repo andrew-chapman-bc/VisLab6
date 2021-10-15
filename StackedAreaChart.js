@@ -43,6 +43,12 @@ export default function StackedAreaChart(container) {
 
     let selected = null, xDomain, data;
 
+    svg.append("clipPath")
+    .attr("id", "clip")
+    .append("rect")
+    .attr("width", width)// the size of clip-path is the same as
+    .attr("height", height); // the chart area
+
     
 	function update(_data){
         	// update scales, encodings, axes (use the total count)
@@ -55,8 +61,10 @@ export default function StackedAreaChart(container) {
                             .offset(d3.stackOffsetNone);
 
             var series = stack(data);
-            console.log("THE SERIES IS",series)
+            //console.log("THE SERIES IS",series)
 
+            console.log("THE XDOMAIN IS",xDomain)
+            console.log("THE DATA IS",data)
             xScale.domain(xDomain? xDomain:d3.extent(data, d => d.date))
             yScale.domain([0, d3.max(series, d => d3.max(d, d => d[1]))]).nice()
             color.domain(keys)
@@ -72,12 +80,17 @@ export default function StackedAreaChart(container) {
                 .y1(d => yScale(d[1]))
         
             console.log(yScale(0))
+            svg.selectAll("path")
+                .remove()
+            svg.selectAll(".tooltip")
+                .text("")
             //Create areas
             svg.selectAll(".stack-area-path")
                 .data(series)
                 .join("path")
                     .attr("fill", ({key}) => color(key))
                     .attr("d", area)
+                    .attr("clip-path", "url(#clip)")
                 .on("mouseover", (event, d, i) => 
                                 {
                                     toolTip.text(d["key"])
@@ -95,7 +108,7 @@ export default function StackedAreaChart(container) {
                                         selected = d.key;
                                     }
                                     update(data); // simply update the chart again
-                                });
+                                })
                 
         
             //Scales 
